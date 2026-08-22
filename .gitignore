@@ -1,5 +1,6 @@
 # 依赖与产物
 node_modules/
+vendor/
 __pycache__/
 *.pyc
 .venv/
