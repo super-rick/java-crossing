@@ -6,6 +6,7 @@ __pycache__/
 .venv/
 .pytest_cache/
 coverage/
+.phpunit.result.cache
 
 # 本地编译产物
 *.exe
