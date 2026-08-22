@@ -15,49 +15,45 @@ jobs:
       fail-fast: false
       matrix:
         service:
-          - {dir: go-order-service, lang: go}
-          - {dir: python-order-service, lang: python}
-          - {dir: nodejs-order-service, lang: node}
-          - {dir: php-order-service, lang: php}
+          - {dir: go-order-service, cmd: 'go vet ./... && go test -race ./...'}
+          - {dir: python-order-service, cmd: 'pip install -r requirements.txt && pytest -q'}
+          - {dir: nodejs-order-service, cmd: 'npm ci && npm test'}
+          - {dir: php-order-service, cmd: 'composer install && vendor/bin/phpunit'}
     steps:
       - uses: actions/checkout@v4
 
+      # 示例目录尚未创建时跳过整个 job(后续 Phase 落地后自动生效)
+      - name: 检查示例目录是否存在
+        id: check
+        run: |
+          if [ -d "examples/${{ matrix.service.dir }}" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "目录 examples/${{ matrix.service.dir }} 未创建,跳过"
+          fi
+
       - uses: actions/setup-go@v5
-        if: matrix.service.lang == 'go'
+        if: matrix.service.dir == 'go-order-service' && steps.check.outputs.exists == 'true'
         with:
           go-version: '1.24'
 
       - uses: actions/setup-python@v5
-        if: matrix.service.lang == 'python'
+        if: matrix.service.dir == 'python-order-service' && steps.check.outputs.exists == 'true'
         with:
           python-version: '3.13'
 
       - uses: actions/setup-node@v4
-        if: matrix.service.lang == 'node'
+        if: matrix.service.dir == 'nodejs-order-service' && steps.check.outputs.exists == 'true'
         with:
           node-version: '22'
 
       - uses: shivammathur/setup-php@v2
-        if: matrix.service.lang == 'php'
+        if: matrix.service.dir == 'php-order-service' && steps.check.outputs.exists == 'true'
         with:
           php-version: '8.4'
 
-      - name: Go vet + test (含竞态检测)
-        if: matrix.service.lang == 'go'
+      - name: 运行测试
+        if: steps.check.outputs.exists == 'true'
         working-directory: examples/${{ matrix.service.dir }}
-        run: go vet ./... && go test -race ./...
-
-      - name: Python test
-        if: matrix.service.lang == 'python'
-        working-directory: examples/${{ matrix.service.dir }}
-        run: pip install -r requirements.txt && pytest -q
-
-      - name: Node test
-        if: matrix.service.lang == 'node'
-        working-directory: examples/${{ matrix.service.dir }}
-        run: npm ci && npm test
-
-      - name: PHP test
-        if: matrix.service.lang == 'php'
-        working-directory: examples/${{ matrix.service.dir }}
-        run: composer install && vendor/bin/phpunit
+        run: ${{ matrix.service.cmd }}
