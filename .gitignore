@@ -1,0 +1,11 @@
+# 依赖与产物
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+coverage/
+
+# 本地编译产物
+*.exe
+*.out
