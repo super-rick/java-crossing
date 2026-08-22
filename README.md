@@ -37,7 +37,7 @@ Java 开发者学新语言,障碍从来不是语法,而是**心智模型**:并�
 | 语言 | 内容状态 | 示例 | CI |
 |---|---|---|---|
 | Go | ✅ 12 模块完成(1.26.7 实测) | ✅ go-order-service | ✅ go vet + test -race |
-| Python | 规划中 | — | — |
+| Python | ✅ 12 模块完成(3.11 实测) | ✅ python-order-service | ✅ pytest |
 | Node.js | 规划中 | — | — |
 | PHP | 规划中 | — | — |
 
