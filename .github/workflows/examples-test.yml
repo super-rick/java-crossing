@@ -1,0 +1,63 @@
+name: examples-test
+
+on:
+  push:
+    paths: ['examples/**']
+  pull_request:
+    paths: ['examples/**']
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: ${{ matrix.service.dir }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - {dir: go-order-service, lang: go}
+          - {dir: python-order-service, lang: python}
+          - {dir: nodejs-order-service, lang: node}
+          - {dir: php-order-service, lang: php}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        if: matrix.service.lang == 'go'
+        with:
+          go-version: '1.24'
+
+      - uses: actions/setup-python@v5
+        if: matrix.service.lang == 'python'
+        with:
+          python-version: '3.13'
+
+      - uses: actions/setup-node@v4
+        if: matrix.service.lang == 'node'
+        with:
+          node-version: '22'
+
+      - uses: shivammathur/setup-php@v2
+        if: matrix.service.lang == 'php'
+        with:
+          php-version: '8.4'
+
+      - name: Go vet + test
+        if: matrix.service.lang == 'go'
+        working-directory: examples/${{ matrix.service.dir }}
+        run: go vet ./... && go test ./...
+
+      - name: Python test
+        if: matrix.service.lang == 'python'
+        working-directory: examples/${{ matrix.service.dir }}
+        run: pip install -r requirements.txt && pytest -q
+
+      - name: Node test
+        if: matrix.service.lang == 'node'
+        working-directory: examples/${{ matrix.service.dir }}
+        run: npm ci && npm test
+
+      - name: PHP test
+        if: matrix.service.lang == 'php'
+        working-directory: examples/${{ matrix.service.dir }}
+        run: composer install && vendor/bin/phpunit

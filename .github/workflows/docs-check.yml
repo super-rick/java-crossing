@@ -1,0 +1,29 @@
+name: docs-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  link-check:
+    name: Markdown 链接检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Link Checker (lychee)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose './**/*.md' --exclude '^https://img\.shields\.io'
+
+  structure-check:
+    name: 结构完整性校验
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 运行 check_structure.py
+        run: python .github/scripts/check_structure.py
