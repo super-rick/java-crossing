@@ -42,10 +42,10 @@ jobs:
         with:
           php-version: '8.4'
 
-      - name: Go vet + test
+      - name: Go vet + test (含竞态检测)
         if: matrix.service.lang == 'go'
         working-directory: examples/${{ matrix.service.dir }}
-        run: go vet ./... && go test ./...
+        run: go vet ./... && go test -race ./...
 
       - name: Python test
         if: matrix.service.lang == 'python'
