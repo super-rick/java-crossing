@@ -78,6 +78,8 @@ def main() -> int:
 
     examples_dir = ROOT / "examples"
     if examples_dir.exists():
+        if not (examples_dir / "README.md").exists():
+            errors.append("examples/README.md 缺失(契约总览)")
         for d in sorted(p for p in examples_dir.iterdir() if p.is_dir()):
             if not (d / "README.md").exists():
                 warnings.append(f"examples/{d.name}/README.md 缺失")

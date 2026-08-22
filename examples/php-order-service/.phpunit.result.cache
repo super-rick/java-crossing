@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"App\\Tests\\StoreTest::testCreateGetPay":0.014,"App\\Tests\\StoreTest::testPayIdempotent":0,"App\\Tests\\StoreTest::testRepeatedPayIdempotent100":0,"App\\Tests\\StoreTest::testInsufficientStock":0.001,"App\\Tests\\StoreTest::testPayNotFound":0}}
