@@ -1,0 +1,7 @@
+# 统一行尾:文本文件按仓库内容存储,检出按平台
+* text=auto
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf
+*.md text eol=lf
